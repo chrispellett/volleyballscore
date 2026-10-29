@@ -30,7 +30,7 @@
 
         .board {
             display: flex;
-            height: 100dvh;
+            height: 100svh;
             width: 100vw;
         }
 
@@ -40,8 +40,8 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 2vh;
-            padding: 0 1vw 6vh 1vw;
+            gap: 2svh;
+            padding: 0 1vw 6svh 1vw;
         }
 
         .team.blue {
@@ -54,7 +54,7 @@
 
         .score {
             text-align: center;
-            font-size: min(55vh, 40vw);
+            font-size: min(50svh, 40vw);
             font-weight: 800;
             line-height: 1;
             font-variant-numeric: tabular-nums;
@@ -63,7 +63,7 @@
 
         .btn {
             width: 28vw;
-            height: min(14vh, 10vw);
+            height: min(14svh, 10vw);
             border: none;
             border-radius: 999px;
             background: rgba(255, 255, 255, 0.18);
@@ -87,13 +87,13 @@
 
         .timer {
             position: fixed;
-            top: max(2vh, env(safe-area-inset-top));
+            top: max(2svh, env(safe-area-inset-top));
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0, 0, 0, 0.55);
-            padding: 1vh 3vw;
+            padding: 1svh 3vw;
             border-radius: 999px;
-            font-size: 7vh;
+            font-size: 7svh;
             font-weight: 600;
             font-variant-numeric: tabular-nums;
             backdrop-filter: blur(6px);
@@ -101,13 +101,13 @@
 
         .new-game {
             position: fixed;
-            bottom: max(2vh, env(safe-area-inset-bottom));
+            bottom: max(2svh, env(safe-area-inset-bottom));
             left: 50%;
             transform: translateX(-50%);
             border: none;
             border-radius: 999px;
-            padding: 1.5vh 4vw;
-            font-size: 5vh;
+            padding: 1.5svh 4vw;
+            font-size: 5svh;
             font-weight: 700;
             background: #fff;
             color: #111;
@@ -123,12 +123,12 @@
             position: fixed;
             bottom: 8px;
             right: 8px;
-            max-height: 20vh;
+            max-height: 20svh;
             overflow-y: auto;
             background: rgba(0, 0, 0, 0.45);
-            border-radius: 1.5vh;
+            border-radius: 1.5svh;
             padding: 3px 12px;
-            font-size: 3vh;
+            font-size: 3svh;
             font-variant-numeric: tabular-nums;
             text-align: right;
             backdrop-filter: blur(6px);
@@ -139,12 +139,12 @@
         }
 
         .history h2 {
-            font-size: 2.4vh;
+            font-size: 2.4svh;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.1em;
             opacity: 0.7;
-            margin-bottom: 0.5vh;
+            margin-bottom: 0.5svh;
         }
 
         .history .b {
@@ -162,9 +162,9 @@
             border: none;
             background: none;
             color: rgba(255, 255, 255, 0.6);
-            font-size: 3vh;
+            font-size: 3svh;
             line-height: 1;
-            padding: 0.3vh;
+            padding: 0.3svh;
             cursor: pointer;
         }
 
