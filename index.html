@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>Volleyball Scoreboard</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            background: #111;
+            color: #fff;
+        }
+
+        .board {
+            display: flex;
+            height: 100dvh;
+            width: 100vw;
+        }
+
+        .team {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2vh;
+            padding: 0 1vw 6vh 1vw;
+        }
+
+        .team.blue {
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+        }
+
+        .team.red {
+            background: linear-gradient(225deg, #991b1b, #e11d48);
+        }
+
+        .score {
+            text-align: center;
+            font-size: min(55vh, 40vw);
+            font-weight: 800;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+        }
+
+        .btn {
+            width: 28vw;
+            height: min(14vh, 10vw);
+            border: none;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.18);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.08s, background 0.15s;
+        }
+
+        .btn:active {
+            transform: scale(0.9);
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        .btn svg {
+            width: auto;
+            height: 70%;
+        }
+
+        .timer {
+            position: fixed;
+            top: max(2vh, env(safe-area-inset-top));
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.55);
+            padding: 1vh 3vw;
+            border-radius: 999px;
+            font-size: 7vh;
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+            backdrop-filter: blur(6px);
+        }
+
+        .new-game {
+            position: fixed;
+            bottom: max(2vh, env(safe-area-inset-bottom));
+            left: 50%;
+            transform: translateX(-50%);
+            border: none;
+            border-radius: 999px;
+            padding: 1.5vh 4vw;
+            font-size: 5vh;
+            font-weight: 700;
+            background: #fff;
+            color: #111;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+            cursor: pointer;
+        }
+
+        .new-game:active {
+            transform: translateX(-50%) scale(0.95);
+        }
+
+        .history {
+            position: fixed;
+            bottom: 8px;
+            right: 8px;
+            max-height: 20vh;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.45);
+            border-radius: 1.5vh;
+            padding: 3px 12px;
+            font-size: 3vh;
+            font-variant-numeric: tabular-nums;
+            text-align: right;
+            backdrop-filter: blur(6px);
+        }
+
+        .history:empty {
+            display: none;
+        }
+
+        .history h2 {
+            font-size: 2.4vh;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            opacity: 0.7;
+            margin-bottom: 0.5vh;
+        }
+
+        .history .b {
+            color: #93c5fd;
+            font-weight: 700;
+        }
+
+        .history .r {
+            color: #fda4af;
+            font-weight: 700;
+        }
+
+        .history .del {
+            margin-left: 30px;
+            border: none;
+            background: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 3vh;
+            line-height: 1;
+            padding: 0.3vh;
+            cursor: pointer;
+        }
+
+        .history .del:active {
+            color: #fff;
+        }
+
+        .rotate-hint {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: #111;
+            align-items: center;
+            justify-content: center;
+            font-size: 6vw;
+            text-align: center;
+            padding: 10vw;
+        }
+
+        @media (orientation: portrait) {
+            .rotate-hint {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="board">
+        <section class="team blue">
+            <button class="btn" data-team="blue" data-delta="1" aria-label="Blue plus one">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M6 15l6-6 6 6" />
+                </svg>
+            </button>
+            <div class="score" id="score-blue">0</div>
+            <button class="btn" data-team="blue" data-delta="-1" aria-label="Blue minus one">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M6 9l6 6 6-6" />
+                </svg>
+            </button>
+        </section>
+        <section class="team red">
+            <button class="btn" data-team="red" data-delta="1" aria-label="Red plus one">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M6 15l6-6 6 6" />
+                </svg>
+            </button>
+            <div class="score" id="score-red">0</div>
+            <button class="btn" data-team="red" data-delta="-1" aria-label="Red minus one">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M6 9l6 6 6-6" />
+                </svg>
+            </button>
+        </section>
+    </div>
+
+    <div class="timer" id="timer">00:00</div>
+    <button class="new-game" id="new-game">New Game</button>
+    <div class="history" id="history"></div>
+    <div class="rotate-hint">Rotate your phone to landscape</div>
+
+    <script>
+        const STORAGE_KEY = "volleyball-scoreboard";
+        const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+        const state = {
+            blue: 0,
+            red: 0,
+            startedAt: Date.now(),
+            history: stored?.history ?? [],
+        };
+
+        const save = () => localStorage.setItem(STORAGE_KEY, JSON.stringify({ history: state.history }));
+
+        const render = () => {
+            document.getElementById("score-blue").textContent = state.blue;
+            document.getElementById("score-red").textContent = state.red;
+            renderHistory();
+        };
+
+        const renderHistory = () => {
+            const el = document.getElementById("history");
+            el.replaceChildren();
+            if (state.history.length === 0) return;
+            const title = document.createElement("h2");
+            title.textContent = "Previous";
+            el.append(title);
+            state.history.forEach((game, index) => {
+                const row = document.createElement("div");
+                const b = document.createElement("span");
+                b.className = "b";
+                b.textContent = game.blue;
+                const r = document.createElement("span");
+                r.className = "r";
+                r.textContent = game.red;
+                const del = document.createElement("button");
+                del.className = "del";
+                del.textContent = "×";
+                del.setAttribute("aria-label", "Delete score");
+                del.addEventListener("click", () => {
+                    state.history.splice(index, 1);
+                    save();
+                    renderHistory();
+                });
+                row.append(b, " – ", r, del);
+                title.after(row);
+            });
+        };
+
+        const renderTimer = () => {
+            const total = Math.floor((Date.now() - state.startedAt) / 1000);
+            const h = Math.floor(total / 3600);
+            const m = String(Math.floor((total % 3600) / 60)).padStart(2, "0");
+            const s = String(total % 60).padStart(2, "0");
+            document.getElementById("timer").textContent = h > 0 ? `${h}:${m}:${s}` : `${m}:${s}`;
+        };
+
+        document.querySelectorAll(".btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const team = btn.dataset.team;
+                state[team] = Math.max(0, state[team] + Number(btn.dataset.delta));
+                save();
+                render();
+            });
+        });
+
+        document.getElementById("new-game").addEventListener("click", () => {
+            if (state.blue > 0 || state.red > 0) {
+                state.history.push({ blue: state.blue, red: state.red });
+            }
+            state.blue = 0;
+            state.red = 0;
+            state.startedAt = Date.now();
+            save();
+            render();
+            renderTimer();
+        });
+
+        render();
+        renderTimer();
+        setInterval(renderTimer, 1000);
+    </script>
+</body>
+
+</html>
